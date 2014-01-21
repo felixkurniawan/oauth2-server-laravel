@@ -21,7 +21,7 @@ php artisan package:install lucadegasperi/oauth2-server-laravel
 alternatively, you can manually install the package via composer. add the following line to your composer.json file:
 
 ```javascript
-"lucadegasperi/oauth2-server-laravel": "1.0.x"
+"lucadegasperi/oauth2-server-laravel": "dev-master"
 ```
 
 Add this line of code to the ```providers``` array located in your ```app/config/app.php``` file:
@@ -150,18 +150,10 @@ This grant type is the easiest to use and is ideal for highly trusted clients. T
     'access_token_ttl' => 604800,
     'callback'         => function($username, $password){
         
-        $credentials = array(
-            'email' => $username,
+        return Auth::validate(array(
+            'email'    => $username,
             'password' => $password,
-        );
-
-        $valid = Auth::validate($credentials);
-
-        if (!$valid) {
-            return false;
-        }
-
-        return Auth::getProvider()->retrieveByCredentials($credentials)->id;
+        ));
     }
 ),
 ```
@@ -251,12 +243,6 @@ Route::get('secure-route', array('before' => 'oauth:scope1,scope2|oauth-owner:cl
     return "oauth secured route for clients only";
 }));
 ```
-
-## Accessing the API
-
-To access any api route, after issuing a token you must pass it as a parameter to the api call:
-
-```http://www.example.com/secure-route?access_token= 'valid_token'```
 
 ## Getting the token owner ID and type
 

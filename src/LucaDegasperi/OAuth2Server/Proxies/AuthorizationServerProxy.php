@@ -6,6 +6,7 @@ use League\OAuth2\Server\Exception\ClientException;
 use Exception;
 use Response;
 use Input;
+use DB;
 
 class AuthorizationServerProxy
 {
@@ -14,30 +15,6 @@ class AuthorizationServerProxy
      * @var [type]
      */
     protected $authServer;
-
-    /**
-     * Exception error HTTP status codes
-     * @var array
-     *
-     * RFC 6749, section 4.1.2.1.:
-     * No 503 status code for 'temporarily_unavailable', because
-     * "a 503 Service Unavailable HTTP status code cannot be
-     * returned to the client via an HTTP redirect"
-     */
-    protected static $exceptionHttpStatusCodes = array(
-        'invalid_request'           =>  400,
-        'unauthorized_client'       =>  400,
-        'access_denied'             =>  401,
-        'unsupported_response_type' =>  400,
-        'invalid_scope'             =>  400,
-        'server_error'              =>  500,
-        'temporarily_unavailable'   =>  400,
-        'unsupported_grant_type'    =>  501,
-        'invalid_client'            =>  401,
-        'invalid_grant'             =>  400,
-        'invalid_credentials'       =>  400,
-        'invalid_refresh'           =>  400,
-    );
 
     /**
      * Create a new AuthorizationServerProxy
@@ -124,8 +101,7 @@ class AuthorizationServerProxy
      */
     public function checkAuthorizeParams()
     {
-        $input = Input::all();
-        return $this->authServer->getGrantType('authorization_code')->checkAuthoriseParams($input);
+        return $this->authServer->getGrantType('authorization_code')->checkAuthoriseParams();
     }
 
     /**
@@ -138,6 +114,19 @@ class AuthorizationServerProxy
     public function newAuthorizeRequest($owner, $owner_id, $options)
     {
         return $this->authServer->getGrantType('authorization_code')->newAuthoriseRequest($owner, $owner_id, $options);
+    }
+
+    /**
+     * Deauthorize client by deleting session data on oauth_sessions table
+     * @param  string $owner    The owner type
+     * @param  string $owner_id The owner id
+     * @return bool             Success or not
+     */
+    public function deleteSession($owner, $owner_id) {
+        return DB::table('oauth_sessions')
+            ->where('owner_type', $owner)
+            ->where('owner_id', $owner_id)
+            ->delete();
     }
 
     /**
@@ -164,9 +153,12 @@ class AuthorizationServerProxy
             );
 
             // make this better in order to return the correct headers via the response object
-            $error = $this->authServer->getExceptionType($e->getCode());
-            $headers = $this->authServer->getExceptionHttpHeaders($error);
-            return Response::json($response, self::$exceptionHttpStatusCodes[$error], $headers);
+            $headers = $this->authServer->getExceptionHttpHeaders($this->authServer->getExceptionType($e->getCode()));
+            foreach ($headers as $header) {
+                // @codeCoverageIgnoreStart
+                header($header);
+                // @codeCoverageIgnoreEnd
+            }
 
         } catch (Exception $e) {
 
@@ -179,6 +171,6 @@ class AuthorizationServerProxy
             return Response::json($response, 500);
         }
 
-        return Response::json($response);
+        return $response;
     }
 }

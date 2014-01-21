@@ -66,23 +66,21 @@ return array(
             'auth_token_ttl'   => 3600,
         ),
 
+        'implicit' => array(
+            'class'            => 'League\OAuth2\Server\Grant\Implicit',
+            'access_token_ttl' => 3600,
+            'auth_token_ttl'   => 3600,
+        ),
+
         'password' => array(
             'class'            => 'League\OAuth2\Server\Grant\Password',
             'access_token_ttl' => 604800,
             'callback'         => function ($username, $password) {
                 
-                $credentials = array(
-                    'email' => $username,
+                return Auth::validate(array(
+                    'email'    => $username,
                     'password' => $password,
-                );
-
-                $valid = Auth::validate($credentials);
-
-                if (!$valid) {
-                    return false;
-                }
-
-                return Auth::getProvider()->retrieveByCredentials($credentials)->id;
+                ));
             }
         ),
 

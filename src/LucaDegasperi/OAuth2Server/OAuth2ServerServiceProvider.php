@@ -20,7 +20,7 @@ class OAuth2ServerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->package('lucadegasperi/oauth2-server-laravel', 'lucadegasperi/oauth2-server-laravel');
+        $this->package('lucadegasperi/oauth2-server-laravel');
 
         require_once __DIR__.'/../../filters.php';
     }
@@ -44,25 +44,28 @@ class OAuth2ServerServiceProvider extends ServiceProvider
 
             $server = $app->make('League\OAuth2\Server\Authorization');
 
-            $config = $app['config']->get('lucadegasperi/oauth2-server-laravel::oauth2');
+            $config = $app['config']->get('oauth2-server-laravel::oauth2');
 
             // add the supported grant types to the authorization server
             foreach ($config['grant_types'] as $grantKey => $grantValue) {
 
                 $server->addGrantType(new $grantValue['class']($server));
-                $server->getGrantType($grantKey)->setAccessTokenTTL($grantValue['access_token_ttl']);
 
-                if (array_key_exists('callback', $grantValue)) {
-                    $server->getGrantType($grantKey)->setVerifyCredentialsCallback($grantValue['callback']);
-                }
-                if (array_key_exists('auth_token_ttl', $grantValue)) {
-                    $server->getGrantType($grantKey)->setAuthTokenTTL($grantValue['auth_token_ttl']);
-                }
-                if (array_key_exists('refresh_token_ttl', $grantValue)) {
-                    $server->getGrantType($grantKey)->setRefreshTokenTTL($grantValue['refresh_token_ttl']);
-                }
-                if (array_key_exists('rotate_refresh_tokens', $grantValue)) {
-                    $server->getGrantType($grantKey)->rotateRefreshTokens($grantValue['rotate_refresh_tokens']);
+                if($grantKey !== 'implicit') {
+                    $server->getGrantType($grantKey)->setAccessTokenTTL($grantValue['access_token_ttl']);
+
+                    if (array_key_exists('callback', $grantValue)) {
+                        $server->getGrantType($grantKey)->setVerifyCredentialsCallback($grantValue['callback']);
+                    }
+                    if (array_key_exists('auth_token_ttl', $grantValue)) {
+                        $server->getGrantType($grantKey)->setAuthTokenTTL($grantValue['auth_token_ttl']);
+                    }
+                    if (array_key_exists('refresh_token_ttl', $grantValue)) {
+                        $server->getGrantType($grantKey)->setRefreshTokenTTL($grantValue['refresh_token_ttl']);
+                    }
+                    if (array_key_exists('rotate_refresh_tokens', $grantValue)) {
+                        $server->getGrantType($grantKey)->rotateRefreshTokens($grantValue['rotate_refresh_tokens']);
+                    }
                 }
             }
 
