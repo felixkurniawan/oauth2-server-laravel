@@ -17,9 +17,8 @@ class OAuthOwnerFilter
     {
         if (! is_null($scope) and ResourceServer::getOwnerType() !== $scope) {
             return Response::json(array(
-                'status' => 403,
-                'error' => 'forbidden',
-                'error_message' => 'Only access tokens representing '.$scope.' can use this endpoint',
+                'code' => 403,
+                'message' => 'Only access tokens representing '.$scope.' can use this endpoint',
             ), 403);
         }
     }

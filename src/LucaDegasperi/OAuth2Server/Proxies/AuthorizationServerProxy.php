@@ -87,8 +87,7 @@ class AuthorizationServerProxy
     public function makeRedirectWithError($params = array())
     {
         return $this->makeRedirect($params['redirect_uri'], array(
-            'error' =>  'access_denied',
-            'error_message' =>  $this->authServer->getExceptionMessage('access_denied'),
+            'message' =>  $this->authServer->getExceptionMessage('access_denied'),
             'state' =>  isset($params['state']) ? $params['state'] : ''
         ));
     }
@@ -148,7 +147,7 @@ class AuthorizationServerProxy
 
             // Throw an exception because there was a problem with the client's request
             $response = array(
-                'error' =>  $this->authServer->getExceptionType($e->getCode()),
+                'code' =>  $this->authServer->getExceptionType($e->getCode()),
                 'error_description' => $e->getMessage()
             );
 
@@ -164,8 +163,8 @@ class AuthorizationServerProxy
 
             // Throw an error when a non-library specific exception has been thrown
             $response = array(
-                'error' =>  'undefined_error',
-                'error_description' => $e->getMessage()
+                'code' =>  500,
+                'message' => $e->getMessage()
             );
 
             return Response::json($response, 500);

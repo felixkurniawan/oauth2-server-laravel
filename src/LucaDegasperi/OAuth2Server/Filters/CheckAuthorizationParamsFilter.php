@@ -29,17 +29,15 @@ class CheckAuthorizationParamsFilter
         } catch (ClientException $e) {
 
             return Response::json(array(
-                'status' => 400,
-                'error' => 'bad_request',
-                'error_message' => $e->getMessage(),
+                'code' => 400,
+                'message' => $e->getMessage(),
             ), 400);
 
         } catch (Exception $e) {
 
             return Response::json(array(
-                'status' => 500,
-                'error' => 'internal_server_error',
-                'error_message' => 'Internal Server Error',
+                'code' => 500,
+                'message' => 'Internal Server Error',
             ), 500);
         }
     }

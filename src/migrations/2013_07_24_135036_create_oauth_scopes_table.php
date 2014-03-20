@@ -22,6 +22,38 @@ class CreateOauthScopesTable extends Migration
 
             $table->timestamps();
         });
+
+        DB::table('oauth_scopes')->insert(
+            array(
+                'id' => '1',
+                'scope' => 'all',
+                'name' => 'all',
+                'description' => 'Enable All',
+                'created_at' => '2014-02-06',
+                'updated_at' => '2014-02-06'
+            )
+        );
+        DB::table('oauth_scopes')->insert(
+            array(
+                'id' => '2',
+                'scope' => 'limited',
+                'name' => 'limited',
+                'description' => 'Limited Access',
+                'created_at' => '2014-02-06',
+                'updated_at' => '2014-02-06'
+            )
+        );
+        DB::table('oauth_scopes')->insert(
+            array(
+                'id' => '3',
+                'scope' => 'internal',
+                'name' => 'internal',
+                'description' => 'Internal Access',
+                'created_at' => '2014-02-06',
+                'updated_at' => '2014-02-06'
+            )
+        );
+
     }
 
     /**

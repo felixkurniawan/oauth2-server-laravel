@@ -28,6 +28,61 @@ class CreateOauthClientScopesTable extends Migration
                     ->onUpdate('no action');
             $table->timestamps();
         });
+
+        DB::table('oauth_client_scopes')->insert(
+            array(
+                'id' => '1',
+                'client_id' => '1',
+                'scope_id' => '1',
+                'created_at' => '2014-02-06',
+                'updated_at' => '2014-02-06'
+            )
+        );
+        DB::table('oauth_client_scopes')->insert(
+            array(
+                'id' => '2',
+                'client_id' => '1',
+                'scope_id' => '2',
+                'created_at' => '2014-02-06',
+                'updated_at' => '2014-02-06'
+            )
+        );
+        DB::table('oauth_client_scopes')->insert(
+            array(
+                'id' => '3',
+                'client_id' => '2',
+                'scope_id' => '1',
+                'created_at' => '2014-02-06',
+                'updated_at' => '2014-02-06'
+            )
+        );
+        DB::table('oauth_client_scopes')->insert(
+            array(
+                'id' => '4',
+                'client_id' => 'HYJLQWTWTA',
+                'scope_id' => '1',
+                'created_at' => '2014-02-06',
+                'updated_at' => '2014-02-06'
+            )
+        );
+        DB::table('oauth_client_scopes')->insert(
+            array(
+                'id' => '5',
+                'client_id' => 'DSTEST',
+                'scope_id' => '1',
+                'created_at' => '2014-02-06',
+                'updated_at' => '2014-02-06'
+            )
+        );
+        DB::table('oauth_client_scopes')->insert(
+            array(
+                'id' => '6',
+                'client_id' => 'DSTEST',
+                'scope_id' => '2',
+                'created_at' => '2014-02-06',
+                'updated_at' => '2014-02-06'
+            )
+        );
     }
 
     /**
