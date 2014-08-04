@@ -167,7 +167,7 @@ class AuthorizationServerProxy
                 'message' => $e->getMessage()
             );
 
-            return Response::json($response, 500);
+            return $response;
         }
 
         return $response;
